@@ -29,9 +29,14 @@ public:
 	void MoveForward(float AxisValue);
 	void MoveSide(float AxisValue);
 	void Jump();
+	void MoveCameraX(float AxisValue);
+	void MoveCameraY(float AxisValue);
 
 	FVector CurrentVelocity;
 	
 	UPROPERTY(EditAnywhere)
 	USceneComponent* VisibleComponent;
+
+	UPROPERTY(EditAnywhere)
+	class UCameraComponent* PlayerCamera;
 };

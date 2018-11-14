@@ -4,6 +4,7 @@
 #include "Components/InputComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/PlayerController.h"
 
 
 // Sets default values
@@ -16,7 +17,7 @@ APlayerCharacter::APlayerCharacter()
 	RootComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 88.0f));
 
 	// Create a camera and a visible object
-	UCameraComponent* PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
+	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	VisibleComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisibleComponent"));
 
 	// Attach our camera and visible object to our root component. Offset and rotate the camera.
@@ -37,11 +38,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!CurrentVelocity.IsZero())
-	{
-		FVector NewLocation = GetActorLocation() + (CurrentVelocity * DeltaTime);
-		SetActorLocation(NewLocation);
-	}
+
 }
 
 // Called to bind functionality to input
@@ -51,21 +48,49 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveSide", this, &APlayerCharacter::MoveSide);
+	PlayerInputComponent->BindAxis("MouseInputX", this, &APlayerCharacter::MoveCameraX);
+	PlayerInputComponent->BindAxis("MouseInputY", this, &APlayerCharacter::MoveCameraY);
 
 	InputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::Jump);
 }
 
 void APlayerCharacter::MoveForward(float AxisValue)
 {
-	CurrentVelocity.X = FMath::Clamp(AxisValue, -1.0f, 1.0f) * -500.0f;
+	if ((Controller != NULL) && (AxisValue != 0.0f))
+	{
+		//Find forward vector
+		FRotator Rotation = Controller->GetControlRotation();
+
+		//Add movement in direction
+		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
+		AddMovementInput(Direction, AxisValue);
+	}
 }
 
 void APlayerCharacter::MoveSide(float AxisValue)
 {
-	CurrentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f) * -500.0f;
+	if ((Controller != NULL) && (AxisValue != 0.0f))
+	{
+		// find out which way is right
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
+
+		// add movement in that direction
+		AddMovementInput(Direction, AxisValue);
+	}
 }
 
 void APlayerCharacter::Jump()
 {
 
+}
+
+void APlayerCharacter::MoveCameraX(float AxisValue)
+{
+	AddControllerYawInput(AxisValue);
+}
+
+void APlayerCharacter::MoveCameraY(float AxisValue)
+{
+	AddControllerPitchInput(AxisValue);
 }
