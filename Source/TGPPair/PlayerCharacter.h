@@ -26,17 +26,34 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
+	//Functions
 	void MoveForward(float AxisValue);
 	void MoveSide(float AxisValue);
-	void Jump();
 	void MoveCameraX(float AxisValue);
 	void MoveCameraY(float AxisValue);
+	void Jump();
+	void FireButtonPress();
+	void FireButtonRelease();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWeaponFire();
+
+
+	//Variables
 	FVector CurrentVelocity;
 	
-	UPROPERTY(EditAnywhere)
-	USceneComponent* VisibleComponent;
+	/*UPROPERTY(EditAnywhere)
+	USceneComponent* VisibleComponent;*/
 
 	UPROPERTY(EditAnywhere)
 	class UCameraComponent* PlayerCamera;
+
+	float weaponTimer;
+
+	/*What is the player's fire rate?*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	float weaponMaxTimer;
+
+	bool isFiring;
 };

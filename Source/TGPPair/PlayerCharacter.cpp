@@ -3,8 +3,11 @@
 #include "PlayerCharacter.h"
 #include "Components/InputComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
 
 
 // Sets default values
@@ -18,12 +21,16 @@ APlayerCharacter::APlayerCharacter()
 
 	// Create a camera and a visible object
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
-	VisibleComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisibleComponent"));
+	//VisibleComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisibleComponent"));
 
 	// Attach our camera and visible object to our root component. Offset and rotate the camera.
 	PlayerCamera->SetupAttachment(RootComponent);
 	PlayerCamera->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
-	VisibleComponent->SetupAttachment(RootComponent);
+	//VisibleComponent->SetupAttachment(RootComponent);
+
+	weaponTimer = 0.0f;
+	weaponMaxTimer = 0.1f;
+	isFiring = false;
 }
 
 // Called when the game starts or when spawned
@@ -38,7 +45,13 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	weaponTimer += DeltaTime;
 
+	if (weaponTimer >= weaponMaxTimer && isFiring)
+	{
+		weaponTimer = 0.0f;
+		OnWeaponFire();
+	}
 }
 
 // Called to bind functionality to input
@@ -51,7 +64,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("MouseInputX", this, &APlayerCharacter::MoveCameraX);
 	PlayerInputComponent->BindAxis("MouseInputY", this, &APlayerCharacter::MoveCameraY);
 
-	InputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::Jump);
+	InputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
+	InputComponent->BindAction("FireWeapon", IE_Pressed, this, &APlayerCharacter::FireButtonPress);
+	InputComponent->BindAction("FireWeapon", IE_Released, this, &APlayerCharacter::FireButtonRelease);
 }
 
 void APlayerCharacter::MoveForward(float AxisValue)
@@ -80,11 +95,6 @@ void APlayerCharacter::MoveSide(float AxisValue)
 	}
 }
 
-void APlayerCharacter::Jump()
-{
-
-}
-
 void APlayerCharacter::MoveCameraX(float AxisValue)
 {
 	AddControllerYawInput(AxisValue);
@@ -93,4 +103,21 @@ void APlayerCharacter::MoveCameraX(float AxisValue)
 void APlayerCharacter::MoveCameraY(float AxisValue)
 {
 	AddControllerPitchInput(AxisValue);
+}
+
+void APlayerCharacter::Jump()
+{
+
+}
+
+void APlayerCharacter::FireButtonPress()
+{
+	isFiring = true;
+	weaponTimer = 0;
+	OnWeaponFire();
+}
+
+void APlayerCharacter::FireButtonRelease()
+{
+	isFiring = false;
 }
