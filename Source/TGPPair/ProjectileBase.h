@@ -23,10 +23,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category = Bullet)
-	UStaticMeshComponent* Bullet;
-
-	UPROPERTY(EditAnywhere, Category = Bullet)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Bullet)
 	class USphereComponent* CollisionSphere;
 	
 	/*Speed at which the bullet moves*/ 
@@ -43,4 +40,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Defaults)
 	bool willDestroyItself;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Defaults)
+	int damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Defaults)
+	bool isMoving;
 };

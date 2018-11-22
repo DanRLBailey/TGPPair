@@ -28,16 +28,18 @@ APlayerCharacter::APlayerCharacter()
 	PlayerCamera->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
 	//VisibleComponent->SetupAttachment(RootComponent);
 
-	weaponTimer = 0.0f;
-	weaponMaxTimer = 0.1f;
+	//Setup Variables
 	isFiring = false;
+	projectileMaxDamage = 1.0f;
+	projectileMinDamage = 0.1f;
+	projectileChargeTime = 1.0f;
 }
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	projectileDamage = projectileMinDamage;
 }
 
 // Called every frame
@@ -45,12 +47,27 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	weaponTimer += DeltaTime;
-
-	if (weaponTimer >= weaponMaxTimer && isFiring)
+	if (isFiring)
 	{
-		weaponTimer = 0.0f;
-		OnWeaponFire();
+		FVector size = FVector(0.01f, 0.01f, 0.01f);
+		int damage = projectileDamage * 100;
+		FVector projectileSize = damage * size;
+		OnWeaponCharge(damage, projectileSize);
+
+		if (isChargingProjectile)
+		{
+			projectileDamage += (DeltaTime / projectileChargeTime);
+
+			if (projectileDamage >= projectileMaxDamage)
+			{
+				projectileDamage = projectileMaxDamage;
+			}
+		}
+	}
+	else
+	{
+		projectileDamage = projectileMinDamage;
+		isChargingProjectile = false;
 	}
 }
 
@@ -64,7 +81,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("MouseInputX", this, &APlayerCharacter::MoveCameraX);
 	PlayerInputComponent->BindAxis("MouseInputY", this, &APlayerCharacter::MoveCameraY);
 
-	InputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
+	InputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::PlayerJump);
 	InputComponent->BindAction("FireWeapon", IE_Pressed, this, &APlayerCharacter::FireButtonPress);
 	InputComponent->BindAction("FireWeapon", IE_Released, this, &APlayerCharacter::FireButtonRelease);
 }
@@ -105,19 +122,20 @@ void APlayerCharacter::MoveCameraY(float AxisValue)
 	AddControllerPitchInput(AxisValue);
 }
 
-void APlayerCharacter::Jump()
+void APlayerCharacter::PlayerJump()
 {
-
+	Jump();
+	OnPlayerJump();
 }
 
 void APlayerCharacter::FireButtonPress()
 {
 	isFiring = true;
-	weaponTimer = 0;
-	OnWeaponFire();
 }
 
 void APlayerCharacter::FireButtonRelease()
 {
 	isFiring = false;
+	projectileDamage = projectileDamage * 100;
+	OnWeaponFire(projectileDamage);
 }

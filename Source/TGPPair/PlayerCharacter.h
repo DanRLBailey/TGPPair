@@ -32,12 +32,18 @@ public:
 	void MoveSide(float AxisValue);
 	void MoveCameraX(float AxisValue);
 	void MoveCameraY(float AxisValue);
-	void Jump();
+	void PlayerJump();
 	void FireButtonPress();
 	void FireButtonRelease();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnWeaponFire();
+	void OnPlayerJump();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWeaponFire(int damage);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWeaponCharge(int damage, FVector projectileSize);
 
 
 	//Variables
@@ -49,11 +55,21 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UCameraComponent* PlayerCamera;
 
-	float weaponTimer;
-
-	/*What is the player's fire rate?*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-	float weaponMaxTimer;
+	float projectileDamage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	float projectileMaxDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	float projectileMinDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	float projectileChargeTime;
+
+	UPROPERTY(BlueprintReadOnly)
 	bool isFiring;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool isChargingProjectile;
 };

@@ -15,10 +15,6 @@ AProjectileBase::AProjectileBase()
 	CollisionSphere->SetSphereRadius(60.0f, true);
 	RootComponent = CollisionSphere;
 
-	Bullet = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bullet"));
-	Bullet->SetWorldScale3D(FVector(0.5f, 0.5f, 0.5f));
-	Bullet->SetupAttachment(RootComponent);
-
 	Movespeed = 20.0f;
 	bulletDeathTimer = 0.0f;
 	bulletDeathMaxTime = 2.0f;
@@ -36,13 +32,16 @@ void AProjectileBase::BeginPlay()
 void AProjectileBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	bulletDeathTimer += DeltaTime;
-
-	AddActorLocalOffset(FVector(Movespeed, 0.0f, 0.0f));
-
-	if (bulletDeathTimer >= bulletDeathMaxTime && willDestroyItself)
+	
+	if (isMoving)
 	{
-		Destroy();
+		AddActorLocalOffset(FVector(Movespeed, 0.0f, 0.0f));
+		bulletDeathTimer += DeltaTime;
+
+		if (bulletDeathTimer >= bulletDeathMaxTime && willDestroyItself)
+		{
+			Destroy();
+		}
 	}
 }
 
