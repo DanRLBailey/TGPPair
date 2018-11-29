@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "TimerManager.h"
 
 
 // Sets default values
@@ -84,6 +85,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	InputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::PlayerJump);
 	InputComponent->BindAction("FireWeapon", IE_Pressed, this, &APlayerCharacter::FireButtonPress);
 	InputComponent->BindAction("FireWeapon", IE_Released, this, &APlayerCharacter::FireButtonRelease);
+	InputComponent->BindAction("Zoom", IE_Pressed, this, &APlayerCharacter::ZoomButtonPress);
+	InputComponent->BindAction("Zoom", IE_Released, this, &APlayerCharacter::ZoomButtonRelease);
 }
 
 void APlayerCharacter::MoveForward(float AxisValue)
@@ -138,4 +141,16 @@ void APlayerCharacter::FireButtonRelease()
 	isFiring = false;
 	projectileDamage = projectileDamage * 100;
 	OnWeaponFire(projectileDamage);
+}
+
+void APlayerCharacter::ZoomButtonPress()
+{
+	isZooming = true;
+	OnWeaponZoomIn();
+}
+
+void APlayerCharacter::ZoomButtonRelease()
+{
+	isZooming = false;
+	OnWeaponZoomOut();
 }

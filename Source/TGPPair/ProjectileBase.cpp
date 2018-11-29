@@ -11,9 +11,9 @@ AProjectileBase::AProjectileBase()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
+	/*CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
 	CollisionSphere->SetSphereRadius(60.0f, true);
-	RootComponent = CollisionSphere;
+	RootComponent = CollisionSphere;*/
 
 	Movespeed = 20.0f;
 	bulletDeathTimer = 0.0f;
@@ -35,6 +35,8 @@ void AProjectileBase::Tick(float DeltaTime)
 	
 	if (isMoving)
 	{
+		Movespeed = (40.0f - (damage * 0.35));
+
 		AddActorLocalOffset(FVector(Movespeed, 0.0f, 0.0f));
 		bulletDeathTimer += DeltaTime;
 
@@ -44,4 +46,3 @@ void AProjectileBase::Tick(float DeltaTime)
 		}
 	}
 }
-

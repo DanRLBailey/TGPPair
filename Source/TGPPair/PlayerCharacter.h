@@ -35,12 +35,20 @@ public:
 	void PlayerJump();
 	void FireButtonPress();
 	void FireButtonRelease();
+	void ZoomButtonPress();
+	void ZoomButtonRelease();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPlayerJump();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnWeaponFire(int damage);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWeaponZoomIn();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWeaponZoomOut();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnWeaponCharge(int damage, FVector projectileSize);
@@ -52,7 +60,7 @@ public:
 	/*UPROPERTY(EditAnywhere)
 	USceneComponent* VisibleComponent;*/
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UCameraComponent* PlayerCamera;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
@@ -69,6 +77,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool isFiring;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool isZooming;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool isChargingProjectile;
