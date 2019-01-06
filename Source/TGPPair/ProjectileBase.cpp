@@ -27,6 +27,7 @@ AProjectileBase::AProjectileBase()
 	bulletDeathTimer = 0.0f;
 	bulletDeathMaxTime = 2.0f;
 	willDestroyItself = true;
+	
 }
 
 // Called when the game starts or when spawned

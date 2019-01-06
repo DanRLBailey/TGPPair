@@ -18,7 +18,7 @@ AEnemy::AEnemy()
 
 
 	CompShipMeshComponent = CreateDefaultSubobject<UDestructibleComponent>(TEXT("Sphere_DM"));
-	const ConstructorHelpers::FObjectFinder<UDestructibleMesh> MeshObj(TEXT("DestructibleMesh'/Game/Enemy/Cube_DM.Cube_DM'"));
+	const ConstructorHelpers::FObjectFinder<UDestructibleMesh> MeshObj(TEXT("DestructibleMesh'/Game/CHICKEN_DM.CHICKEN_DM'"));
 	CompShipMeshComponent->AttachToComponent(this->GetDefaultAttachComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	CompShipMeshComponent->SetDestructibleMesh(MeshObj.Object);
 
@@ -30,6 +30,8 @@ void AEnemy::BeginPlay()
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerCharacter::StaticClass(), FoundActors);
 	player = (APlayerCharacter*)FoundActors[0];
+	this->SetActorScale3D(FVector(4, 4, 4));
+	this->SetActorRotation(FRotator(180, 0, 0), ETeleportType::None);
 }
 
 // Called every frame
@@ -40,20 +42,20 @@ void AEnemy::Tick(float DeltaTime)
 	{
 		if (player->GetActorLocation().X > this->GetActorLocation().X + 30)
 		{
-			this->SetActorLocation(this->GetActorLocation() + FVector(5, 0, 0), false, NULL, ETeleportType::None);
+			this->SetActorLocation(this->GetActorLocation() + FVector(2, 0, 0), true, NULL, ETeleportType::None);
 		}
 		else if (player->GetActorLocation().X < this->GetActorLocation().X - 30)
 		{
-			this->SetActorLocation(this->GetActorLocation() + FVector(-5, 0, 0), false, NULL, ETeleportType::None);
+			this->SetActorLocation(this->GetActorLocation() + FVector(-2, 0, 0), true, NULL, ETeleportType::None);
 		}
 
 		if (player->GetActorLocation().Y > this->GetActorLocation().Y + 30)
 		{
-			this->SetActorLocation(this->GetActorLocation() + FVector(0, 5, 0), false, NULL, ETeleportType::None);
+			this->SetActorLocation(this->GetActorLocation() + FVector(0, 2, 0), true, NULL, ETeleportType::None);
 		}
 		else if (player->GetActorLocation().Y < this->GetActorLocation().Y - 30)
 		{
-			this->SetActorLocation(this->GetActorLocation() + FVector(0, -5, 0), false, NULL, ETeleportType::None);
+			this->SetActorLocation(this->GetActorLocation() + FVector(0, -2, 0), true, NULL, ETeleportType::None);
 		}
 	}
 }
