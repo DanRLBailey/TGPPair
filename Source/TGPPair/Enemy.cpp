@@ -38,20 +38,20 @@ void AEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (health >= 0)
 	{
-		if (player->GetActorLocation().X > this->GetActorLocation().X)
+		if (player->GetActorLocation().X > this->GetActorLocation().X + 30)
 		{
 			this->SetActorLocation(this->GetActorLocation() + FVector(5, 0, 0), false, NULL, ETeleportType::None);
 		}
-		else if (player->GetActorLocation().X < this->GetActorLocation().X)
+		else if (player->GetActorLocation().X < this->GetActorLocation().X - 30)
 		{
 			this->SetActorLocation(this->GetActorLocation() + FVector(-5, 0, 0), false, NULL, ETeleportType::None);
 		}
 
-		if (player->GetActorLocation().Y > this->GetActorLocation().Y)
+		if (player->GetActorLocation().Y > this->GetActorLocation().Y + 30)
 		{
 			this->SetActorLocation(this->GetActorLocation() + FVector(0, 5, 0), false, NULL, ETeleportType::None);
 		}
-		else if (player->GetActorLocation().Y < this->GetActorLocation().Y)
+		else if (player->GetActorLocation().Y < this->GetActorLocation().Y - 30)
 		{
 			this->SetActorLocation(this->GetActorLocation() + FVector(0, -5, 0), false, NULL, ETeleportType::None);
 		}

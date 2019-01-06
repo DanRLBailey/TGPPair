@@ -29,9 +29,10 @@ public:
 
 	void Hurt(int amount) 
 	{
+		
 		health -= amount;
 		if (health <= 0) //
-			CompShipMeshComponent->ApplyRadiusDamage(10000, FVector(0, 0, 0), 2000, 100, true);
+			CompShipMeshComponent->ApplyRadiusDamage(10000, FVector(0, 0, 0), 2000, 2000, true);
 
 	};
 	UPROPERTY(EditAnywhere)
