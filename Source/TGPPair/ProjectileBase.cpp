@@ -71,7 +71,7 @@ void AProjectileBase::Tick(float DeltaTime)
 					if (Hit.Actor->GetName().Equals(this->GetName(), ESearchCase::IgnoreCase))
 						continue;
 					
-					Cast<AEnemy>(Hit.Actor)->Hurt(damage);
+					Cast<AEnemy>(Hit.Actor)->Hurt(damage * 3);
 					
 					Destroy();
 				}
